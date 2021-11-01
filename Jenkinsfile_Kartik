@@ -23,15 +23,15 @@ node{
        aws_access_id = USERNAME
        aws_secret_key = PASSWORD
      }
-     if(!aws_access_id) {
+     if( !aws_access_id ){
        error("AWS access key is empty or not defined.")
      }
-     if(!aws_secret_key) {
+     if( !aws_secret_key ){
        error("AWS secret key is empty or not defined.")
      }
    }
    stage('Execute'){
-     if(cleanup.equals('true')) {
+     if( cleanup.equals('true') ){
        println "Cleanup Selected. SKipping Execute Process."
        sshagent(credentials: ['local-vm-dev-ssh-key']) {
          sh '''
@@ -42,9 +42,8 @@ node{
          '''
        }
      }
-    }
-    else{
-      sshagent(credentials: ['local-vm-dev-ssh-key']) {
+     else{
+         sshagent(credentials: ['local-vm-dev-ssh-key']) {
          sh '''
          ssh -T -o StrictHostKeyChecking=no ec2-user@10.32.209.207 <<EOF
          ls
@@ -55,8 +54,10 @@ node{
          python3 fx_development_cli.py --action create --forecast_runner_repo  https://fx-ds:q5C7NLzGJZ8fLt8VaBYV@bitbucket.org/utopusinsights/fx_wind_intraday.git --forecast_runner_tag ${forecast_runner_tag} --artifact_basepath ${artifact_basepath} --orchestrator_sdk_version ${orchestrator_sdk_version} --env-repo https://fx-ds:q5C7NLzGJZ8fLt8VaBYV@bitbucket.org/utopusinsights/fx-intraday-local-environment-builder.git --env-repo-tag  ${env-repo-tag} --ensemble_sdk_version  ${ensemble_sdk_version}
          <<-EOF
          '''
-      }
-    }
+         }
+     }
+
+   }
   stage('Token'){
     sshagent(credentials: ['local-vm-dev-ssh-key']) {
       sh '''
